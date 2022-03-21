@@ -1,9 +1,15 @@
-from starlette.requests import Request
-from starlette.responses import Response
+from fastapi import FastAPI
+from fastapi.exceptions import HTTPException
+from base64 import b64decode
+import binascii
 
-async def app(scope, receive, send):
-    assert scope['type'] == 'http'
-    request = Request(scope, receive)
-    content = f"{request.url}"
-    response = Response(content, media_type='text/plain')
-    await response(scope, receive, send)
+app = FastAPI()
+
+@app.get("/{url}")
+async def read_root(url):
+    try:
+        url = b64decode(url)
+    except binascii.Error:
+        raise HTTPException(400, "Bad base64")
+    
+    return url
