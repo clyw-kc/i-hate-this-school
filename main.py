@@ -4,6 +4,6 @@ from starlette.responses import Response
 async def app(scope, receive, send):
     assert scope['type'] == 'http'
     request = Request(scope, receive)
-    content = request.url.path
+    content = f"{request.url.path} @ {request.url.host}"
     response = Response(content, media_type='text/plain')
     await response(scope, receive, send)
